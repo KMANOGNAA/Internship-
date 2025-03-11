@@ -1,0 +1,29 @@
+from flask import Flask, jsonify
+import subprocess
+import os
+import getpass
+from datetime import datetime
+import pytz
+
+app = Flask(__name__)
+
+@app.route('/htop')
+def htop():
+    # Running the top command
+    top_output = subprocess.run(['top', '-bn1'], capture_output=True, text=True)
+
+    # Getting user and server details
+    name = "K Manognaa"
+    username = getpass.getuser()
+    server_time = datetime.now(pytz.timezone('Asia/Kolkata')).strftime('%Y-%m-%d %H:%M:%S')
+
+    return f"""
+    Name: {name}<br>
+    Username: {username}<br>
+    Server Time in IST: {server_time}<br>
+    TOP output:<br>
+    <pre>{top_output.stdout}</pre>
+    """
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
